@@ -8,7 +8,7 @@ import pandas as pd
 import csv
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-
+import seaborn as sns
 
 
 def write_data(traffic_data, data_file_path):
@@ -215,43 +215,48 @@ def print_error_syntax():
     print("python run_generax.py username:<username> <repositories_list_file> <output_file>.")
 
 def ReadPlot(repo_name, csv_path):
-  
-  df = pd.read_csv(csv_path)
+    # Read CSV
+    df = pd.read_csv(csv_path)
 
-  
-  df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d')
+    # Convert date column
+    df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d')
 
+    # Set Seaborn theme
+    sns.set_theme(style="whitegrid")
 
-  plt.figure(figsize=(10, 6))
+    # Create the plot
+    plt.figure(figsize=(12, 6))
+    
+    plt.plot(df['Date'], df['Clones'], label='Clones', marker='o', linestyle='-', 
+             color='#1f77b4', markersize=6, linewidth=2, alpha=0.8) # Blue
+    plt.plot(df['Date'], df['Views'], label='Views', marker='s', linestyle='-', 
+             color='#ff6f61', markersize=6, linewidth=2, alpha=0.8) # Coral
 
+    # Format x-axis with fewer ticks
+    plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))  # Short month name + day
 
-  plt.plot(df['Date'], df['Clones'], label='Clones', marker='o', linestyle='-')
-  plt.plot(df['Date'], df['Views'], label='Views', marker='s', linestyle='-')
+    # Rotate labels for better readability
+    plt.xticks(rotation=45, ha='right')
 
+    # Titles & labels with better font settings
+    plt.title(f'GitHub Traffic for {repo_name}', fontsize=14, fontweight='bold')
+    plt.xlabel('Date', fontsize=12)
+    plt.ylabel('Count', fontsize=12)
 
-  plt.gca().xaxis.set_major_locator(mdates.DayLocator())
+    # Add legend
+    plt.legend(fontsize=12, loc='upper left', frameon=True)
 
-  plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+    # Add light grid
+    plt.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
 
+    # Save plot
+    plot_path = os.path.join("./", f"{repo_name}_TrafficPlot.png")
+    plt.tight_layout()
+    plt.savefig(plot_path, dpi=300, bbox_inches='tight')
 
-  plt.xticks(rotation=46)
-
-
-  plt.title('Clones and Views Over Time')
-  plt.xlabel('Date')
-  plt.ylabel('Count')
-
-
-  plt.legend()
-
-
-  plt.tight_layout()
-
-
-  plot_path = os.path.join("./", f"{repo_name}_TrafficPlot.png")
-  plt.savefig(plot_path)
-
-  plt.show()
+    # Show the plot
+    plt.show()
 
 
 if (__name__== "__main__"):

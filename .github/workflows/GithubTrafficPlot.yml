@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip3 install pandas matplotlib PyGithub pillow
+          pip3 install pandas matplotlib PyGithub pillow seaborn
 
       - name: Run image generation script
         run: python3 TrafficPlot/GithubTrafficPlot.py token:${{ secrets.GH_PAT }} TrafficPlot/RepoName.txt TrafficPlot/   # 
