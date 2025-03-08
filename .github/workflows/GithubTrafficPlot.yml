@@ -17,10 +17,10 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: '3.9' 
+          python-version: '3.12' 
 
-      - name: Install PyGithub version 2.5.0
-        run: pip install PyGithub==2.5.0  
+      - name: Install PyGithub version 2.6.1
+        run: pip install PyGithub==2.6.1  
 
       - name: Install dependencies
         run: |

@@ -122,9 +122,9 @@ def get_traffic_data(data_file_path):
 def update_metric(repo, traffic_data, metric_name):
   metrics = None
   if (metric_name == "views"):
-    metrics = repo.get_views_traffic()[metric_name]
+    metrics = repo.get_views_traffic().views
   elif (metric_name == "clones"):
-    metrics = repo.get_clones_traffic()[metric_name]
+    metrics = repo.get_clones_traffic().clones
   else:
     assert(False)
   metric_data = traffic_data[repo.name][metric_name]
@@ -163,18 +163,30 @@ def print_summary(traffic_data):
   print("")
   for repo_name in traffic_data:
     repository_data = traffic_data[repo_name]
-    print(repo_name)
+    print(f"Repository: {repo_name}")
     for metric_name in repository_data:
-      total_uniques = 0
-      total_count = 0
+      print(f"  Metric: {metric_name}")
       metric_data = repository_data[metric_name]
       for timestamp in metric_data:
         metrics = metric_data[timestamp]
-        total_count += metrics[0]
-        total_uniques += metrics[1]
-      print(metric_name + ": " + str(total_count))
-      print("unique " + metric_name + ": " + str(total_uniques))
+        print(f"    Date: {timestamp.strftime('%Y-%m-%d')} - Count: {metrics[0]}, Uniques: {metrics[1]}")
     print("")
+# def print_summary(traffic_data):
+#   print("")
+#   for repo_name in traffic_data:
+#     repository_data = traffic_data[repo_name]
+#     print(repo_name)
+#     for metric_name in repository_data:
+#       total_uniques = 0
+#       total_count = 0
+#       metric_data = repository_data[metric_name]
+#       for timestamp in metric_data:
+#         metrics = metric_data[timestamp]
+#         total_count += metrics[0]
+#         total_uniques += metrics[1]
+#       print(metric_name + ": " + str(total_count))
+#       print("unique " + metric_name + ": " + str(total_uniques))
+#     print("")
 
 
 def read_repositories_names(repositories_file_path):
@@ -202,7 +214,7 @@ def run_gitratra(token, data_folder, repositories_file_path):
   
   for repo_name in repositories:
     traffic_data = {}
-    repo = g.get_user().get_repo(repo_name)
+    repo = g.get_repo("arc-research-lab/" + repo_name) #Fixme for other repos
     update_repo(repo, traffic_data)
     print_summary(traffic_data)
     data_file = os.path.join(data_folder, f"{repo_name}.csv")
